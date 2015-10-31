@@ -40,8 +40,10 @@ def hello():
         logger.info('add new file %s', file_name)
         return "POST METHOD!"
     elif request.method == 'DELETE':
+        logger.info('delete')
         delete_file = request.get_json()
         file_data = delete_file['filename']
+        #logger.info('delete')
         os.remove(os.path.join(db.user_folder(flask_login.current_user.id), file_data))
         logger.info('delete method')
         logger.info('delete file %s', file_data)
