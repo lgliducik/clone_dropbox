@@ -11,10 +11,11 @@ from flask.ext.login import LoginManager
 import flask.ext.login as flask_login
 
 logger = logging.getLogger(__name__)
-#logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONNECTOR
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+logger.info('create db')
 db = ORM(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
