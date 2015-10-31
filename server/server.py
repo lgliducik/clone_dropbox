@@ -28,6 +28,7 @@ SESSION_EMAIL = "email"
 @app.route("/", methods=['POST', 'GET', 'DELETE'])
 @flask_login.login_required
 def hello():
+    logger.info('hello')
     if request.method == 'POST':
         add_files = request.get_json()
         file_data = add_files['data']
