@@ -17,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONNECTOR
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 logger.info('create db')
 db = ORM(app)
+logger.info('created db')
 login_manager = LoginManager()
 login_manager.init_app(app)
 SESSION_EMAIL = "email"
@@ -28,7 +29,7 @@ def hello():
         add_files = request.get_json()
         file_data = add_files['data']
         file_name = add_files['filename']
-        folder = os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\server", db.user_folder(flask_login.current_user.id))
+        folder = os.path.join("./server", db.user_folder(flask_login.current_user.id))
         with open(os.path.join(folder, file_name), 'wb') as fd:
             fd.write(file_data.encode("utf8"))
         logger.info('post method')
