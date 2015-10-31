@@ -19,7 +19,10 @@ logger.info('create db')
 db = ORM(app)
 logger.info('created db')
 login_manager = LoginManager()
+logger.info('created login manager')
 login_manager.init_app(app)
+logger.info('init app')
+
 SESSION_EMAIL = "email"
 
 @app.route("/", methods=['POST', 'GET', 'DELETE'])
