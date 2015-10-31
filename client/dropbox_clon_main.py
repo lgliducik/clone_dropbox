@@ -38,7 +38,7 @@ def createParser():
     return parser
 
 def get_changes(root_folder, session):
-    current_content = set(os.listdir(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder)))
+    current_content = set(os.listdir(root_folder))
     old_files_new = []
     for row in session.query(File_my, File_my.path_name):
         old_files_new.append(row.path_name)
@@ -57,7 +57,7 @@ def add_new(folder, new_files, session, cookies):
         session.add(file_new)
         session.commit()
         payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
-        r = requests.post("http://127.0.0.1:5000/" , json = payload, cookies = cookies)
+        r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
         print r.text, 'status = ', r.status_code
         logger.info('add file %s', new_file_name)
 
@@ -69,7 +69,7 @@ def add_new_reload(folder, new_files, session, cookies):
         session.add(file_new)
         session.commit()
         payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
-        r = requests.post("http://127.0.0.1:5000/" , json = payload, cookies = cookies)
+        r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
         print r.text, 'status = ', r.status_code
         logger.info('reload modified file %s', new_file_name)
 
@@ -78,7 +78,7 @@ def delete_files(removed_files, session, cookies):
         session.query(File_my).filter(File_my.path_name == delete_file_name).delete()
         session.commit()
         payload = {'filename':delete_file_name}
-        r = requests.delete("http://127.0.0.1:5000/", json = payload, cookies = cookies)
+        r = requests.delete("https://radiant-reef-1251.herokuapp.com/", json = payload, cookies = cookies)
         print r.text, 'status = ', r.status_code
         logger.info('delete file %s', delete_file_name)
 
@@ -104,8 +104,14 @@ def create_table():
 
 def get_changes_mod(root_folder, session):
     reload_to_server = []
-    current_content = set(os.listdir(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder)))
-    current_content_time = set(str(os.path.getmtime(os.path.join(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder),i))) for i in current_content)
+    current_content = set(os.listdir(root_folder))
+    current_content_time = set(str(os.path.getmtime(os.path.join(root_folder, i))) for i in current_content)
+    
+    #def fn(file_name):
+    #    return str(os.path.getmtime(os.path.join(root_folder, file_name)))
+
+    #gen = (fn(file_name) for file_name in current_content)
+    #current_content_time = set()
     current_zip = zip(current_content, current_content_time)
     old_files_new = []
     old_files_new_time = []
@@ -129,7 +135,7 @@ def main():
     parser = createParser()
     namespace = parser.parse_args()
     payload = {'login':namespace.login, 'password':namespace.password, 'folder': namespace.folder}
-    r = requests.post("http://127.0.0.1:5000/login", json = payload)
+    r = requests.post("https://radiant-reef-1251.herokuapp.com/login", json = payload)
     logger.info('username %s, userpassword %s', namespace.login, namespace.password)
     if not os.path.exists(os.path.join(os.getcwd(), namespace.folder)):
         os.mkdir(os.path.join(os.getcwd(), namespace.folder))
