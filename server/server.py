@@ -26,7 +26,7 @@ logger.info('init app')
 SESSION_EMAIL = "email"
 
 @app.route("/", methods=['POST', 'GET', 'DELETE'])
-#@flask_login.login_required
+@flask_login.login_required
 def hello():
     logger.info('hello')
     if request.method == 'POST':
