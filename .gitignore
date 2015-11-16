@@ -1,0 +1,10 @@
+./client/my_venv
+./server/my_venv
+client/dropbox.db
+client/logging.log
+client/my_venv/
+logging.log
+*.pyc
+server/my_venv/
+server/users.db
+
