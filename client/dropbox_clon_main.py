@@ -51,7 +51,7 @@ def get_changes(root_folder, session):
 def add_new_files(current_content, prev_content):
     return current_content - prev_content, (prev_content - current_content)
 
-def add_new(storage, save_data, folder, new_files, session, cookies):
+def add_new(folder, new_files, session, cookies):
     for new_file_name in new_files:
         print "add new"
         file_new = File_my(new_file_name, str(os.path.getmtime(os.path.join(folder, new_file_name))))
@@ -59,12 +59,12 @@ def add_new(storage, save_data, folder, new_files, session, cookies):
         session.commit()
         payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
         #r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
-        r = requests.post("http://127.0.0.1:5000/add_remove_files", json = payload, cookies = cookies)
+        r = requests.post("http://127.0.0.1:5000/", json = payload, cookies = cookies)
 		#http://127.0.0.1:5000/
         print r.text, 'status = ', r.status_code
         logger.info('add file %s', new_file_name)
 
-def add_new_reload(storage, save_data, folder, new_files, session, cookies):
+def add_new_reload(folder, new_files, session, cookies):
     for new_file_name in new_files:
         session.query(File_my).filter(File_my.path_name == new_file_name).delete()
         session.commit()	
@@ -135,7 +135,7 @@ def main():
     namespace = parser.parse_args()
     payload = {'login':namespace.login, 'password':namespace.password, 'folder': namespace.folder}
     #r = requests.post("https://radiant-reef-1251.herokuapp.com/login", json = payload)
-    requests.post("http://127.0.0.1:5000/login", json = payload)
+    r = requests.post("http://127.0.0.1:5000/login", json = payload)
     logger.info('username %s, userpassword %s', namespace.login, namespace.password)
     if not os.path.exists(os.path.join(os.getcwd(), namespace.folder)):
         os.mkdir(os.path.join(os.getcwd(), namespace.folder))
@@ -143,10 +143,10 @@ def main():
     while True:
         try:
             files_reload_to_server = get_changes_mod( namespace.folder, session)
-            add_new_reload(storage, save_data, namespace.folder, files_reload_to_server, session, r.cookies)
+            add_new_reload(namespace.folder, files_reload_to_server, session, r.cookies)
             new_files, removed_files = get_changes(namespace.folder, session)
-            add_new(save_data, namespace.folder, new_files, session, r.cookies)
-            delete_files(storage, save_data, removed_files, session, r.cookies)
+            add_new(namespace.folder, new_files, session, r.cookies)
+            delete_files(removed_files, session, r.cookies)
         except Exception:
             logger.exception('uncatch exception')
         time.sleep(1)

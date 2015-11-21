@@ -9,7 +9,7 @@ from database import DB_CONNECTOR, ORM
 from flask.ext.login import LoginManager
 import flask.ext.login as flask_login
 import argparse
-from storage import Storage
+from Storage import Storage
 from StorageFilesystem import StorageFilesystem
 from StorageCloud import StorageCloud
 
@@ -22,7 +22,6 @@ db = ORM(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 SESSION_EMAIL = "email"
-global storage
 storage = None
 
 def createParser():
@@ -37,7 +36,6 @@ def hello():
         add_files = request.get_json()
         file_data = add_files['data']
         file_name = add_files['filename']
-        
         
         storage.add_file( file_data, file_name)
         #with open(os.path.join(folder, file_name), 'wb') as fd:
@@ -96,10 +94,12 @@ def login():
     print "how save file = ", save_data 
     folder_new = os.path.join("./", folder)
     if save_data == "cloud":
+        global storage
         storage = StorageCloud()
         print "cloud", storage
     else:
-        starage = StorageFilesystem(folder_new)
+        global storage
+        storage = StorageFilesystem(folder_new)
         print "filesystem", storage
     return ""
 

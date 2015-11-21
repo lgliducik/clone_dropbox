@@ -1,7 +1,7 @@
 # coding: utf-8
 import requests
 import os
-import Storage from storage
+from Storage import Storage
 
 STATUS_NO_CONTENT = 204
 STATUS_FORBIDDEN = 403
@@ -13,8 +13,8 @@ class StorageCloud(Storage):
         self.token = ''
         self.storageurl = ''	
         self.is_auth = False
-        self.containername = get_containername()
-        auth_storage(self, '8730_db', 't4Iy0PvXnv')
+        self.containername = self.get_containername()
+        self.auth_storage('8730_db', 't4Iy0PvXnv')
     
 	
     def add_file(self, data_file, file_name):
@@ -47,7 +47,7 @@ class StorageCloud(Storage):
             return STATUS_FORBIDDEN
 	    
 	
-    def get_containername():
+    def get_containername(self):
         if self.is_auth == True:
             r_list = requests.get(self.storageurl, headers = {'X-Auth-Token':self.token})
             self.containername = r_list.text
@@ -56,7 +56,7 @@ class StorageCloud(Storage):
             return STATUS_FORBIDDEN
     
 	
-    def auth_storage( login, password):
+    def auth_storage(self, login, password):
         headers = {'X-Auth-User': login, 'X-Auth-Key': password}
         r = requests.get("https://auth.selcdn.ru/" , headers = headers)
         self.token = r.headers['X-Auth-Token']
