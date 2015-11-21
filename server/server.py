@@ -1,6 +1,7 @@
 # coding: utf-8
 from flask import Flask, request, jsonify
 import os
+import sys
 import logging
 app = Flask(__name__)
 download_folder = "./download/"
@@ -14,13 +15,18 @@ from StorageFilesystem import StorageFilesystem
 from StorageCloud import StorageCloud
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logging.log', level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONNECTOR
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+logger.info('create db')
 db = ORM(app)
+logger.info('created db')
 login_manager = LoginManager()
+logger.info('created login manager')
 login_manager.init_app(app)
+logger.info('init app')
+
 SESSION_EMAIL = "email"
 storage = None
 
@@ -32,6 +38,7 @@ def createParser():
 @app.route("/", methods=['POST', 'GET', 'DELETE'])
 @flask_login.login_required
 def hello():
+    logger.info('hello')
     if request.method == 'POST':
         add_files = request.get_json()
         file_data = add_files['data']
@@ -40,12 +47,11 @@ def hello():
         storage.add_file( file_data, file_name)
         #with open(os.path.join(folder, file_name), 'wb') as fd:
         #   fd.write(file_data.encode("utf8"))
-        
-		
         logger.info('post method')
         logger.info('add new file %s', file_name)
         return "POST METHOD!"
     elif request.method == 'DELETE':
+        logger.info('delete')
         delete_file = request.get_json()
         file_name = delete_file['filename']
         
@@ -104,4 +110,5 @@ def login():
     return ""
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

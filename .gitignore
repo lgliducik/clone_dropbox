@@ -1,11 +1,9 @@
-Procfile
-Procfile.windows
-client/Storage.py
-client/Storage.pyc
+./client/my_venv
+./server/my_venv
 client/dropbox.db
 client/logging.log
 client/my_venv/
-server/database.pyc
-server/logging.log
+logging.log
+*.pyc
 server/my_venv/
 server/users.db

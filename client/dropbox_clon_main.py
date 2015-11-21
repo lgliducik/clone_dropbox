@@ -11,7 +11,6 @@ from sqlalchemy import Column, String, Table, MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
 
 
 Base = declarative_base()
@@ -39,7 +38,7 @@ def createParser():
     return parser
 
 def get_changes(root_folder, session):
-    current_content = set(os.listdir(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder)))
+    current_content = set(os.listdir(root_folder))
     old_files_new = []
     for row in session.query(File_my, File_my.path_name):
         old_files_new.append(row.path_name)
@@ -109,8 +108,14 @@ def create_table():
 
 def get_changes_mod(root_folder, session):
     reload_to_server = []
-    current_content = set(os.listdir(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder)))
-    current_content_time = set(str(os.path.getmtime(os.path.join(os.path.join("D:\workproject\pyproject\clone_dropbox-master\clone_dropbox-master\client", root_folder),i))) for i in current_content)
+    current_content = set(os.listdir(root_folder))
+    current_content_time = set(str(os.path.getmtime(os.path.join(root_folder, i))) for i in current_content)
+    
+    #def fn(file_name):
+    #    return str(os.path.getmtime(os.path.join(root_folder, file_name)))
+
+    #gen = (fn(file_name) for file_name in current_content)
+    #current_content_time = set()
     current_zip = zip(current_content, current_content_time)
     old_files_new = []
     old_files_new_time = []
