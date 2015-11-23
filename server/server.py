@@ -28,7 +28,6 @@ login_manager.init_app(app)
 logger.info('init app')
 
 SESSION_EMAIL = "email"
-storage = None
 
 def createParser():
     parser = argparse.ArgumentParser()
@@ -44,6 +43,13 @@ def hello():
         file_data = add_files['data']
         file_name = add_files['filename']
         
+        if save_data == "cloud":
+            storage = StorageCloud()
+            logger.info('cloud')
+        else:
+            storage = StorageFilesystem(db.user_folder(flask_login.current_user.id))
+            logger.info('filesystem')
+		
         storage.add_file( file_data, file_name)
         #with open(os.path.join(folder, file_name), 'wb') as fd:
         #   fd.write(file_data.encode("utf8"))
@@ -55,6 +61,13 @@ def hello():
         delete_file = request.get_json()
         file_name = delete_file['filename']
         
+        if save_data == "cloud":
+            storage = StorageCloud()
+            logger.info('cloud')
+        else:
+            storage = StorageFilesystem(db.user_folder(flask_login.current_user.id))
+            logger.info('filesystem')
+		
         storage.delete_file(file_name)
         #os.remove(os.path.join(db.user_folder(flask_login.current_user.id), file_name))
         
@@ -88,27 +101,24 @@ def login():
                 os.mkdir(os.path.join(os.getcwd(), folder))
             flask_login.login_user(user)
         else:
-            logger.info('create new user email%s', email)
+            logger.info('create new user email %s', email)
             db.create_new_user(email, password, folder)
             if not os.path.exists(os.path.join(os.getcwd(), folder)):
                 os.mkdir(os.path.join(os.getcwd(), folder))
+            import pdb
+            pdb.set_trace()
             user = db.User(email, password, folder)
             flask_login.login_user(user)
+	
+
+def install_server():
     parser = createParser()
     namespace = parser.parse_args()
+    global save_data
     save_data = namespace.save
-    print "how save file = ", save_data 
-    folder_new = os.path.join("./", folder)
-    if save_data == "cloud":
-        global storage
-        storage = StorageCloud()
-        print "cloud", storage
-    else:
-        global storage
-        storage = StorageFilesystem(folder_new)
-        print "filesystem", storage
-    return ""
-
-if __name__ == "__main__":
+    logger.info('storage type %s', save_data)  
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='127.0.0.1', port=port)
+ 
+if __name__ == "__main__":
+    install_server()

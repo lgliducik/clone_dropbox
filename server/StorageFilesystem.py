@@ -19,4 +19,7 @@ class StorageFilesystem(Storage):
     def get_list_of_files(self):
         current_content_files = os.listdir(os.path.join(os.getcwd(), self.folder))
         return current_content_files
-        
+     
+    def set_folder(self, folder):
+        self.folder = folder
+	

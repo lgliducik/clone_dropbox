@@ -2,7 +2,7 @@
 
 from flask.ext.sqlalchemy import SQLAlchemy
 
-DB_CONNECTOR = 'sqlite://'
+DB_CONNECTOR = 'sqlite:///users.db'
 
 
 class ORM(object):

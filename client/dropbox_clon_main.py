@@ -11,7 +11,8 @@ from sqlalchemy import Column, String, Table, MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
+server_name = "http://127.0.0.1:5000/"
+server_name_login = "http://127.0.0.1:5000/login"
 
 Base = declarative_base()
 metadata = MetaData()
@@ -58,7 +59,7 @@ def add_new(folder, new_files, session, cookies):
         session.commit()
         payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
         #r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
-        r = requests.post("http://127.0.0.1:5000/", json = payload, cookies = cookies)
+        r = requests.post(server_name, json = payload, cookies = cookies)
 		#http://127.0.0.1:5000/
         print r.text, 'status = ', r.status_code
         logger.info('add file %s', new_file_name)
@@ -71,7 +72,7 @@ def add_new_reload(folder, new_files, session, cookies):
         session.add(file_new)
         session.commit()
         payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
-        r = requests.post("http://127.0.0.1:5000/", json = payload, cookies = cookies)
+        r = requests.post("server_name", json = payload, cookies = cookies)
         #r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
         print r.text, 'status = ', r.status_code
         logger.info('reload modified file %s', new_file_name)
@@ -82,7 +83,7 @@ def delete_files(removed_files, session, cookies):
         session.commit()
         payload = {'filename':delete_file_name}
         #r = requests.delete("https://radiant-reef-1251.herokuapp.com/", json = payload, cookies = cookies)
-        r = requests.delete("http://127.0.0.1:5000/" , json = payload)
+        r = requests.delete("server_name" , json = payload)
         print r.text, 'status = ', r.status_code
         logger.info('delete file %s', delete_file_name)
 
@@ -140,7 +141,7 @@ def main():
     namespace = parser.parse_args()
     payload = {'login':namespace.login, 'password':namespace.password, 'folder': namespace.folder}
     #r = requests.post("https://radiant-reef-1251.herokuapp.com/login", json = payload)
-    r = requests.post("http://127.0.0.1:5000/login", json = payload)
+    r = requests.post(server_name_login, json = payload)
     logger.info('username %s, userpassword %s', namespace.login, namespace.password)
     if not os.path.exists(os.path.join(os.getcwd(), namespace.folder)):
         os.mkdir(os.path.join(os.getcwd(), namespace.folder))
