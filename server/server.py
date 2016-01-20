@@ -105,8 +105,8 @@ def login():
             db.create_new_user(email, password, folder)
             if not os.path.exists(os.path.join(os.getcwd(), folder)):
                 os.mkdir(os.path.join(os.getcwd(), folder))
-            import pdb
-            pdb.set_trace()
+            #import pdb
+            #pdb.set_trace()
             user = db.User(email, password, folder)
             flask_login.login_user(user)
 	
