@@ -29,7 +29,8 @@ class File_my(Base):
 
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logging.log', level=logging.DEBUG)
+#logging.basicConfig(filename='logging.log', level=logging.DEBUG)
+logging.basicConfig(stream = sys.stdout, level=logging.DEBUG)
 
 def createParser():
     parser = argparse.ArgumentParser()
@@ -40,11 +41,13 @@ def createParser():
 
 def get_changes(root_folder, session):
     current_content = set(os.listdir(root_folder))
+    #print current_content
     old_files_new = []
     for row in session.query(File_my, File_my.path_name):
         old_files_new.append(row.path_name)
     session.commit()
     prev_content = set(i for i in old_files_new)
+    #print prev_content
     session.commit()
     return add_new_files(current_content, prev_content)
 
@@ -55,12 +58,14 @@ def add_new(folder, new_files, session, cookies):
     for new_file_name in new_files:
         print "add new"
         file_new = File_my(new_file_name, str(os.path.getmtime(os.path.join(folder, new_file_name))))
+        #print "file_new = ", file_new
         session.add(file_new)
         session.commit()
-        payload = {'filename':new_file_name,'data':open(os.path.join(folder, new_file_name), 'rb').read()}
+        data = open(os.path.join(folder, new_file_name), 'rb').read()
+        payload = {'filename':new_file_name,'data':data}
+        print "new_file_name = ", new_file_name
         #r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
         r = requests.post(server_name, json = payload, cookies = cookies)
-		#http://127.0.0.1:5000/
         print r.text, 'status = ', r.status_code
         logger.info('add file %s', new_file_name)
 
@@ -83,7 +88,7 @@ def delete_files(removed_files, session, cookies):
         session.commit()
         payload = {'filename':delete_file_name}
         #r = requests.delete("https://radiant-reef-1251.herokuapp.com/", json = payload, cookies = cookies)
-        r = requests.delete("server_name" , json = payload)
+        r = requests.delete(server_name , json = payload, cookies = cookies)
         print r.text, 'status = ', r.status_code
         logger.info('delete file %s', delete_file_name)
 
@@ -148,9 +153,10 @@ def main():
         logger.info('create new folder %s', namespace.folder)
     while True:
         try:
-            files_reload_to_server = get_changes_mod( namespace.folder, session)
-            add_new_reload(namespace.folder, files_reload_to_server, session, r.cookies)
+            #files_reload_to_server = get_changes_mod( namespace.folder, session)
+            #add_new_reload(namespace.folder, files_reload_to_server, session, r.cookies)
             new_files, removed_files = get_changes(namespace.folder, session)
+            #print "new_files = ", new_files, "removed_files = ", removed_files
             add_new(namespace.folder, new_files, session, r.cookies)
             delete_files(removed_files, session, r.cookies)
         except Exception:

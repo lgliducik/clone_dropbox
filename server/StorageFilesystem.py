@@ -1,9 +1,9 @@
 # coding: utf-8
 from Storage import Storage
+import os
 
 class StorageFilesystem(Storage): 
     def __init__(self, folder):
-        print "hello"
         self.folder = folder
 		
 		

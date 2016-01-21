@@ -15,7 +15,8 @@ from StorageFilesystem import StorageFilesystem
 from StorageCloud import StorageCloud
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+#logging.basicConfig(filename='logging.log', level=logging.DEBUG)
+logging.basicConfig(stream = sys.stdout, level=logging.DEBUG)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_CONNECTOR
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
@@ -49,7 +50,7 @@ def hello():
         else:
             storage = StorageFilesystem(db.user_folder(flask_login.current_user.id))
             logger.info('filesystem')
-		
+        print "file_name = ", file_name 
         storage.add_file( file_data, file_name)
         #with open(os.path.join(folder, file_name), 'wb') as fd:
         #   fd.write(file_data.encode("utf8"))
@@ -60,7 +61,7 @@ def hello():
         logger.info('delete')
         delete_file = request.get_json()
         file_name = delete_file['filename']
-        
+        print "I want delete file_name = ", file_name
         if save_data == "cloud":
             storage = StorageCloud()
             logger.info('cloud')
@@ -72,13 +73,14 @@ def hello():
         #os.remove(os.path.join(db.user_folder(flask_login.current_user.id), file_name))
         
         logger.info('delete method')
-        logger.info('delete file %s', file_data)
+        logger.info('delete file %s', file_name)
         return "DELETE METHOD!"
     return "hello!"
 
 @app.route("/new_files")
 @flask_login.login_required
 def new_files():
+    print "new files" 
     #current_content_files = os.listdir(os.path.join(os.getcwd(), db.user_folder(flask_login.current_user.id)))
     current_content_files = storage.get_list_of_files()
     return jsonify(file_list = current_content_files)
@@ -109,6 +111,7 @@ def login():
             #pdb.set_trace()
             user = db.User(email, password, folder)
             flask_login.login_user(user)
+    return ""
 	
 
 def install_server():
