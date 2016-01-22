@@ -62,7 +62,7 @@ def add_new(folder, new_files, session, cookies):
         session.add(file_new)
         session.commit()
         data = open(os.path.join(folder, new_file_name), 'rb').read()
-        payload = {'filename':new_file_name,'data':data}
+        payload = {'filename':new_file_name,'data':data, 'size_file':os.path.getsize(os.path.join(os.getcwd(), os.path.join(folder, new_file_name)))}
         print "new_file_name = ", new_file_name
         #r = requests.post("https://radiant-reef-1251.herokuapp.com/" , json = payload, cookies = cookies)
         r = requests.post(server_name, json = payload, cookies = cookies)

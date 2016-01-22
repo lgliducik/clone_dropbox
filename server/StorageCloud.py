@@ -17,15 +17,16 @@ class StorageCloud(Storage):
         self.auth_storage('8730_db', 't4Iy0PvXnv')
     
 	
-    def add_file(self, data_file, file_name):
+    def add_file(self, data_file, file_name, size_of_file):
         if self.is_auth == True:
-            size_of_file = os.path.getsize(file_name)
             if size_of_file < MAX_LENGHT_BYTE:
                 headers_token = {'X-Auth-Token':self.token, 'Content-Lenght':str(size_of_file)}
             else:
                 headers_token = {'X-Auth-Token':self.token, 'Transfer-Encoding':'chunked'}
             data = {'file': data_file}
-            r_add_file = requests.put(self.storageurl + '/' + self.containername + '/' + file_name, headers = headers_token, data = data)
+            print "self.storageurl = ", self.storageurl
+            print "self.containername = ", self.containername
+            r_add_file = requests.put(self.storageurl + '/' + str(self.containername) + '/' + file_name, headers = headers_token, data = data)
             return r_add_file.status_code
         else: 
             return STATUS_FORBIDDEN

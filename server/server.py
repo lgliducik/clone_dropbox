@@ -43,6 +43,7 @@ def hello():
         add_files = request.get_json()
         file_data = add_files['data']
         file_name = add_files['filename']
+        size_file = add_files['size_file']
         
         if save_data == "cloud":
             storage = StorageCloud()
@@ -51,9 +52,7 @@ def hello():
             storage = StorageFilesystem(db.user_folder(flask_login.current_user.id))
             logger.info('filesystem')
         print "file_name = ", file_name 
-        storage.add_file( file_data, file_name)
-        #with open(os.path.join(folder, file_name), 'wb') as fd:
-        #   fd.write(file_data.encode("utf8"))
+        storage.add_file( file_data, file_name, size_file)
         logger.info('post method')
         logger.info('add new file %s', file_name)
         return "POST METHOD!"

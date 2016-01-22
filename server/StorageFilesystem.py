@@ -7,7 +7,7 @@ class StorageFilesystem(Storage):
         self.folder = folder
 		
 		
-    def add_file(self, data_file, file_name):
+    def add_file(self, data_file, file_name, size_of_file):
         with open(os.path.join(self.folder, file_name), 'wb') as fd:
             fd.write(data_file.encode("utf8"))
     
