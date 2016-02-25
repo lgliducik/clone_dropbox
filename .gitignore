@@ -7,3 +7,4 @@ logging.log
 *.pyc
 server/my_venv/
 server/users.db
+.idea/*

@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 import os
 import sys
 import logging
+import base64
 app = Flask(__name__)
 download_folder = "./download/"
 
@@ -44,10 +45,12 @@ def hello():
         file_data = add_files['data']
         file_name = add_files['filename']
         size_file = add_files['size_file']
-        
+        print 'save_data = ', save_data
+        print '!!!!!!!!!!!! = ', save_data == 'cloud'
         if save_data == "cloud":
             storage = StorageCloud()
             logger.info('cloud')
+            print "cloud!!!!!!!!!!!!!!!!!!!!" 
         else:
             storage = StorageFilesystem(db.user_folder(flask_login.current_user.id))
             logger.info('filesystem')

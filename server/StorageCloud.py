@@ -14,10 +14,11 @@ class StorageCloud(Storage):
         self.storageurl = ''	
         self.is_auth = False
         self.containername = self.get_containername()
-        self.auth_storage('8730_db', 't4Iy0PvXnv')
+        print "!!!!!!!!!!!!!!!!!self.auth_storage = ", self.auth_storage('8730_db', 't4Iy0PvXnv')
     
 	
     def add_file(self, data_file, file_name, size_of_file):
+        print("!!!!!!!!!!add file cloud")
         if self.is_auth == True:
             if size_of_file < MAX_LENGHT_BYTE:
                 headers_token = {'X-Auth-Token':self.token, 'Content-Lenght':str(size_of_file)}
@@ -26,6 +27,7 @@ class StorageCloud(Storage):
             data = {'file': data_file}
             print "self.storageurl = ", self.storageurl
             print "self.containername = ", self.containername
+            print "!!!!!!!!!!data = ", self.storageurl + '/' + str(self.containername) + '/' + file_name
             r_add_file = requests.put(self.storageurl + '/' + str(self.containername) + '/' + file_name, headers = headers_token, data = data)
             return r_add_file.status_code
         else: 
