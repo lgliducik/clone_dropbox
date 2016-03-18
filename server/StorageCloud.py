@@ -27,8 +27,10 @@ class StorageCloud(Storage):
             data = {'file': data_file}
             print "self.storageurl = ", self.storageurl
             print "self.containername = ", self.containername
-            print "!!!!!!!!!!data = ", self.storageurl + '/' + str(self.containername) + '/' + file_name
-            r_add_file = requests.put(self.storageurl + '/' + str(self.containername) + '/' + file_name, headers = headers_token, data = data)
+            print "!!!!!!!!!!data = ", self.storageurl + str(self.containername) + '/' + file_name
+            r_add_file = requests.put(self.storageurl + str(self.containername) + '/' + file_name, headers=headers_token, data=data)
+            print "!!!!!!!!!!!!!!!!r_add_file = ", r_add_file
+            print "!!!!!!!!!!!!!!!!!!!!r_add_file.status_code = ", r_add_file.status_code
             return r_add_file.status_code
         else: 
             return STATUS_FORBIDDEN

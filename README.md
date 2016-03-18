@@ -3,6 +3,7 @@
             cd /server
 			зайти в виртуальное окружение my_venv\Scripts\activate
 		    python server.py -s 'filesystem'
+			python server.py -s 'cloud'
 			логирование в файле logging.log
 запуск клиента
             cd /client

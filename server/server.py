@@ -46,7 +46,6 @@ def hello():
         file_name = add_files['filename']
         size_file = add_files['size_file']
         print 'save_data = ', save_data
-        print '!!!!!!!!!!!! = ', save_data == 'cloud'
         if save_data == "cloud":
             storage = StorageCloud()
             logger.info('cloud')
