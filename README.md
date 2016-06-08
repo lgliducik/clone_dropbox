@@ -1,12 +1,15 @@
-# clone_dropbox
-запуск сервера 
-            cd /server
-			зайти в виртуальное окружение my_venv\Scripts\activate
-		    python server.py -s 'filesystem'
-			python server.py -s 'cloud'
-			логирование в файле logging.log
-запуск клиента
-            cd /client
-			зайти в виртуальное окружение my_venv\Scripts\activate
-			python dropbox_clon_main.py -f folder1 -l lida -p 123
-			логирование в файле logging.log
+п»ї# Clone dropbox
+Web application for save your files on the server and share between many clients.
+
+## run
+```
+
+virtualenv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+cd server
+python server.py -s 'filesystem'
+python server.py -s 'cloud'
+cd client
+python dropbox_clon_main.py -f folder1 -l lida -p 123
+```
