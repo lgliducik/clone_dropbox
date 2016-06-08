@@ -3,7 +3,6 @@ Web application for save your files on the server and share between many clients
 
 ## run
 ```
-
 virtualenv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
